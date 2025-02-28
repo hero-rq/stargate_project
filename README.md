@@ -46,6 +46,7 @@ module load Java/17.0.4
 module load Anaconda3/2024.02-1
 
 source activate myspark
+spark-submit ./Code/topdown_attack.py #(the python file I wrote)
 ```
 
 ### **Submit the Job**  
