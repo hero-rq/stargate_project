@@ -1,15 +1,15 @@
 
-# **Stargate Setup & Running Jobs on HPC**  
+# **Stargate Setup & Running Jobs on HPC (for me and for general use)**  
 
 ## **1️⃣ Connecting to VPN & Authenticating**  
-Ensure you are connected to your VPN and authenticated before proceeding.  
+Connect to my VPN and do auth.  
 
 ## **2️⃣ Start an Interactive HPC Session**  
 ```bash
 srun --pty bash -i
 ```
 
-## **3️⃣ Load Required Modules**  
+## **3️⃣ Load Required Modules (one by one)**  
 ```bash
 module load Java/17.0.4
 module load Anaconda3/2024.02-1
@@ -26,13 +26,13 @@ cd com6012/ScalableML/
 ---
 
 ## **5️⃣ Writing a Python Script in `Code/` Directory**  
-Place your Python script inside the `Code/` directory to be executed within the HPC environment.
+top down attack and write any python code in the Code/ directory 
 
 ---
 
 ## **6️⃣ Submitting a Batch Job**  
 
-Create a job script **`HPC/initial_top_down.sh`**:  
+Create a job script **`HPC/initial_top_down.sh`** (or anything I want .sh):  
 
 ```bash
 #!/bin/bash
@@ -65,9 +65,8 @@ cd Output
 ls
 ```
 Example output:
-```
-COM6012_Lab1_SAMPLE.txt  COM6012_Lab1.txt  COM6012_Lab2.txt  
-initial_topdown_state.txt  output_27_0.png
+```  
+initial_topdown_state.txt  (and other files)
 ```
 
 To view the batch job log:
@@ -78,6 +77,5 @@ cat initial_topdown_state.txt
 ---
 
 ### **✅ Done!**  
-Now your job is executed, and you can check the results inside the **`Output/`** directory. 🎯
+Now my job is executed, and I can check the results inside the **`Output/`** directory. 🎯
 
-Let me know if you want to tweak anything! 😃🔥
