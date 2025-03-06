@@ -3,6 +3,9 @@
 
 ## **1️⃣ Connecting to VPN & Authenticating**  
 Connect to my VPN and do auth.  
+```bash
+ssh $USER@stanage.shef.ac.uk
+```
 
 ## **2️⃣ Start an Interactive HPC Session**  
 ```bash
