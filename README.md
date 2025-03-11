@@ -60,6 +60,8 @@ sbatch HPC/initial_top_down.sh
 ```
 Submitted batch job 5542113
 ```
+- **Large `driver-memory`** → If the driver is doing heavy computations, global aggregations, or pulling full data via `.collect()`.
+- **Large `executor-memory`** → If executors need to handle massive data, do heavy joins, caching, or shuffling.
 
 ```bash
 #!/bin/bash
@@ -76,10 +78,6 @@ module load Anaconda3/2024.02-1
 source activate myspark
 spark-submit --driver-memory 20g --executor-memory 30g ./Code/LogMiningBig.py  
 ```
-
-- **Large `driver-memory`** → If the driver is doing heavy computations, global aggregations, or pulling full data via `.collect()`.
-- **Large `executor-memory`** → If executors need to handle massive data, do heavy joins, caching, or shuffling.
-
 
 ---
 
