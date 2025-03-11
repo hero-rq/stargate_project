@@ -61,6 +61,26 @@ sbatch HPC/initial_top_down.sh
 Submitted batch job 5542113
 ```
 
+```bash
+#!/bin/bash
+#SBATCH --job-name=panda_kumo 
+#SBATCH --time=00:30:00 
+#SBATCH --cpus-per-task=10
+#SBATCH --mem-per-cpu=20G 
+#SBATCH --output=./Output/initial_topdown_state.txt  
+
+module load Java/17.0.4
+
+module load Anaconda3/2024.02-1
+
+source activate myspark
+spark-submit --driver-memory 20g --executor-memory 30g ./Code/LogMiningBig.py  
+```
+
+- **Large `driver-memory`** → If the driver is doing heavy computations, global aggregations, or pulling full data via `.collect()`.
+- **Large `executor-memory`** → If executors need to handle massive data, do heavy joins, caching, or shuffling.
+
+
 ---
 
 ## **7️⃣ Checking the Job Output**  
