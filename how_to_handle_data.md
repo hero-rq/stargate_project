@@ -56,7 +56,7 @@ Unlike Google Colab or Kaggle (where data can be fetched with Python’s `reques
    ```bash
    # Example: from your local terminal
    scp /path/to/local/data.csv \
-       <username>@stanage.shef.ac.uk:/users/<username>/myproject/data/
+       <username>@stanage.shef.ac.uk:/users/my_auth/com6012/ScalableML/Data
    ```
    - Adjust paths accordingly.  
    - This copies `data.csv` from your local machine into HPC folder `myproject/data`.
@@ -71,6 +71,7 @@ Unlike Google Colab or Kaggle (where data can be fetched with Python’s `reques
 ---
 
 ### 3.2 Cloning a GitHub Repository
+(recommended in '/users/my_auth/com6012/ScalableML/Data' directory)
 
 If your HPC environment **does allow** outbound internet access for GitHub (some HPCs do, others don’t), you can do:
 
@@ -97,19 +98,11 @@ git clone https://github.com/YourAccount/DataRepo.git
 ## 4. Managing Data in HPC Directories
 
 1. **Where to Put Data**  
-   - **Home Directory**: `/users/<username>` – smaller quota, usually slower.  
-   - **Scratch/Parallel**: `/mnt/parscratch/users/<username>` – recommended for large or heavy I/O data.  
+   - **Home Directory**: `/users/my_auth/com6012/ScalableML/Data` – smaller quota, usually slower.  
 
 2. **Check Quotas**  
    - HPC docs or `quota` command might show how much space you have.  
    - Large data sets can quickly exceed your home directory’s limit, so use `scratch`.
-
-3. **Line Endings (Shell scripts)**  
-   - If you bring shell scripts from Windows, run:
-     ```bash
-     dos2unix <your_script.sh>
-     ```
-   - Avoid “Command not found” errors from CRLF endings.
 
 ---
 
@@ -136,12 +129,12 @@ We then run a Spark job that:
    ```bash
    # On your local machine
    scp ./local_data.csv \
-       <username>@stanage.shef.ac.uk:/mnt/parscratch/users/<username>/multi_src_demo/data/
+       <username>@stanage.shef.ac.uk:/users/my_auth/com6012/ScalableML/Data
    ```
 2. **GitHub Data**  
    ```bash
    # If HPC can git clone:
-   cd /mnt/parscratch/users/<username>/multi_src_demo/
+   cd /users/my_auth/com6012/ScalableML/Data
    git clone https://github.com/YourAccount/YourDataRepo.git
 
    # Now your data is at multi_src_demo/YourDataRepo/public_dataset.csv
@@ -153,89 +146,6 @@ We then run a Spark job that:
 3. **File Layout**  
    - `~/multi_src_demo/data/local_data.csv`  
    - `~/multi_src_demo/YourDataRepo/public_dataset.csv`  
-
----
-
-#### **Step B**: Create a Python Script to Process Them
-
-Inside `Code/` (any subfolder you like in HPC), create `merge_data.py`:
-
-```python
-from pyspark.sql import SparkSession
-
-spark = SparkSession.builder \
-    .appName("MultiSourceDataMerge") \
-    .config("spark.local.dir", "/mnt/parscratch/users/<username>") \
-    .getOrCreate()
-
-# 1) Read local_data.csv
-df_local = spark.read.csv(
-    "/mnt/parscratch/users/<username>/multi_src_demo/data/local_data.csv",
-    header=True,
-    inferSchema=True
-)
-
-# 2) Read public_dataset.csv
-df_public = spark.read.csv(
-    "/mnt/parscratch/users/<username>/multi_src_demo/YourDataRepo/public_dataset.csv",
-    header=True,
-    inferSchema=True
-)
-
-# 3) Simple transformation: union the two
-df_combined = df_local.unionByName(df_public)
-
-# 4) Show the combined count
-print(f"Row Count Local: {df_local.count()}")
-print(f"Row Count Public: {df_public.count()}")
-print(f"Row Count Combined: {df_combined.count()}")
-
-# 5) Write to HPC scratch
-output_path = "/mnt/parscratch/users/<username>/multi_src_demo/output/combined_result"
-df_combined.coalesce(1).write.mode("overwrite").csv(output_path, header=True)
-
-spark.stop()
-```
-
-Things to note:
-- We used absolute paths in HPC to avoid “file not found” issues.  
-- If the HPC can handle it, you could also do `df_local.join(...)` or more advanced transformations.
-
----
-
-#### **Step C**: Submit as a Batch Job
-
-1. **Create a batch script** `HPC/merge_job.sh`:
-   ```bash
-   #!/bin/bash
-   #SBATCH --job-name=multi_data_merge
-   #SBATCH --time=00:30:00
-   #SBATCH --nodes=1
-   #SBATCH --mem=4G
-   #SBATCH --output=./Output/merge_data_output.txt
-
-   module load Java/17.0.4
-   module load Anaconda3/2024.02-1
-   source activate myspark
-
-   spark-submit ./Code/merge_data.py
-   ```
-2. **Submit**:
-   ```bash
-   sbatch HPC/merge_job.sh
-   ```
-3. **Check Logs**:
-   ```bash
-   cat ./Output/merge_data_output.txt
-   # Expect row counts, etc.
-   ```
-4. **Examine Final Output**:
-   ```bash
-   ls /mnt/parscratch/users/<username>/multi_src_demo/output/combined_result
-   # Expect part-*.csv or a single CSV if coalesced to 1
-   ```
-
-That’s it! You have successfully combined data from two sources in an HPC environment.
 
 ---
 
