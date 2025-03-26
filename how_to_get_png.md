@@ -9,3 +9,9 @@ you can take it all at once !~!~!~!~!!!~!~!~!~!~!~!~!~!~!~~!~!~!~!~!~!~!~!~!  yu
 ```bash
 scp 'my_auth@stanage.shef.ac.uk:/users/my_auth/com6012/ScalableML/Output/*.png' /mnt/c/Users/miiiiine/Downloads/
 ```
+
+for my convenience 
+
+```bash
+scp 'my_auth@stanage.shef.ac.uk:/users/my_auth/com6012/ScalableML/Output/*.png' /mnt/c/Users/my_auth/OneDrive/desktop/penguin/scalable_ml/assess_party/output
+``` 
