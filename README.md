@@ -15,10 +15,26 @@ srun --pty bash -i
 ## **3️⃣ Load Required Modules (one by one)**  
 ```bash
 module load Java/17.0.4
+```
+```bash
 module load Anaconda3/2024.02-1
+```
+```bash
 source activate myspark
+```
+```bash
 export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
-pip install matplotlib pandas
+```
+
+``` bash
+
+# remove something 
+pip uninstall pandas numpy
+# OR with conda:
+conda remove pandas numpy
+
+#install something 
+conda install pandas numpy
 ```
 
 ## **4️⃣ Navigate to the Project Directory**  
